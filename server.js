@@ -102,3 +102,47 @@ app.post("/daftar", (req, res) => {
       }
     });
   });
+
+  app.put("/editUser/:id",isAuthorized, function(req, res) {
+    let data = // membuat variabel data yang berisi sintaks untuk mengupdate tabel di database
+      'UPDATE akun SET nama="' +
+      req.body.nama +
+      '", alamat="' +
+      req.body.alamat +
+      '", password="' +
+      req.body.password +
+      '", no_telp="' +
+      req.body.telepon +
+      '", email="' +
+      req.body.email +
+      '" where id=' +
+      req.params.id;
+    db.query(data, function(err, result) {
+      // mengupdate data di database
+      if (err) throw err;
+      // jika gagal maka akan keluar error
+      else {
+        res.json({
+          success: true,
+          message: "Data berhasil diupdate"
+        });
+      }
+    });
+  });
+  
+  app.delete("/deleteUser/:id",isAuthorized, function(req, res) {
+    // membuat end point delete
+    let id = "delete from akun where id=" + req.params.id;
+  
+    db.query(id, function(err, result) {
+      // mengupdate data di database
+      if (err) throw err;
+      // jika gagal maka akan keluar error
+      else {
+        res.json({
+          success: true,
+          message: "Data berhasil dihapus"
+        });
+      }
+    });
+  });
