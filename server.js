@@ -45,6 +45,36 @@ const db = mysql.createConnection({
     next();
   };
 
+  app.post("/login/admin", (req, res, next) => {
+    //membuat end point untuk login akun
+    var username = req.body.username; // mengimpor email dari form
+    var password = req.body.password; //mengimpor password dari form
+    const sql = "SELECT * FROM admin WHERE username = ? AND password = ?"; // mencocokkan data form dengan data tabel
+    if (username && password) {
+      // jika email dan password ada
+      db.query(sql, [username, password], function(err, rows) {
+        if (err) throw err;
+        // jika error akan menampilkan errornya
+        else if (rows.length > 0) {
+          jwt.sign(
+            { username, password },
+            "SuperSecRetKey",
+            {
+              expiresIn: 60 * 60 * 6
+            },
+            (err, token) => {
+              res.send(token);
+            }
+          );
+        } else {
+          res.json({
+            message: "Username atau Password salah"
+          }); // jika semua if tidak terpenuhi maka menampilkan kalimat tersebut
+        }
+      });
+    }
+  });
+
 //   User
 
 app.post("/login", (req, res) => {
