@@ -176,3 +176,57 @@ app.post("/daftar", (req, res) => {
       }
     });
   });
+
+  // Diary
+
+  app.post("/diary/:id",isAuthorized, function(request, result) {
+    let data = request.body;
+  
+    var diary = {
+      idUser: req.params.id, // mengambil data dari form
+      diary: data.diary, // mengambil data dari form
+    };
+  
+    db.query("insert into diary set ?", diary, (err, result) => {
+      if (err) throw err;
+    });
+  
+    result.json({
+      success: true,
+      message: "Diary user telah masuk"
+    });
+  });
+
+  app.get("/diary/:id",isAuthorized, (req, res) => {
+    db.query(`select diary,created_at from diary where id=`+req.params.id,
+      (err, result) => {
+        if (err) throw err;
+  
+        res.json({
+          message: "berhasil menampilkan diary dengan id = "+req.params.id,
+          data: result
+        });
+      }
+    );
+  });
+
+  app.put("/diary/edit/:idUser/:idDiary",isAuthorized,(req,res)=>{
+    let data = // membuat variabel data yang berisi sintaks untuk mengupdate tabel di database
+    'UPDATE diary SET diary="' +
+    req.body.diary +
+    '" where id=' +
+    req.params.idDiary+
+    '" AND idUser='+
+    req.params.idUser;
+  db.query(data, function(err, result) {
+    // mengupdate data di database
+    if (err) throw err;
+    // jika gagal maka akan keluar error
+    else {
+      res.json({
+        success: true,
+        message: "Diary berhasil diupdate"
+      });
+    }
+  });
+  })
