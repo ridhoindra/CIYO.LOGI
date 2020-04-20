@@ -243,4 +243,39 @@ app.post("/daftar", (req, res) => {
     });
   });
 
+
+  // Mood
+
+  app.post("/mood/:id",isAuthorized, function(req, res) {
+    let data = req.body;
+  
+    var diary = {
+      idUser: req.params.id, // mengambil data dari form
+      kategori: data.kategori,
+      keterangan: data.keterangan // mengambil data dari form
+    };
+  
+    db.query("insert into mood set ?", diary, (err, result) => {
+      if (err) throw err;
+    });
+  
+    res.json({
+      success: true,
+      message: "Data mood user telah masuk"
+    });
+  });
+
+  app.get("/mood/:idUser",isAuthorized, (req, res) => {
+    db.query(`select * from mood where idUser=`+req.params.idUser,
+      (err, result) => {
+        if (err) throw err;
+  
+        res.json({
+          message: "berhasil menampilkan data mood dengan id = "+req.params.idUser,
+          data: result
+        });
+      }
+    );
+  });
+
   app.listen(port, () => console.log(`PORT 3000 Sam!!!`))
