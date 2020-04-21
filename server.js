@@ -249,13 +249,13 @@ app.post("/daftar", (req, res) => {
   app.post("/mood/:id",isAuthorized, function(req, res) {
     let data = req.body;
   
-    var diary = {
+    var mood = {
       idUser: req.params.id, // mengambil data dari form
       kategori: data.kategori,
       keterangan: data.keterangan // mengambil data dari form
     };
   
-    db.query("insert into mood set ?", diary, (err, result) => {
+    db.query("insert into mood set ?", mood, (err, result) => {
       if (err) throw err;
     });
   
@@ -277,5 +277,41 @@ app.post("/daftar", (req, res) => {
       }
     );
   });
+
+
+  // Content
+
+  // app.post("/content", function(req, res) {
+  //   let data = req.body;
+  
+  //   var content = {
+  //     nama: req.text.nama, // mengambil data dari form
+  //     source: req.file.source,// mengambil data dari form
+  //   };
+  
+  //   db.query("insert into content set ?", content, (err, result) => {
+  //     if (err) throw err;
+
+  //     res.json({
+  //       success: true,
+  //       message: "Data content telah masuk"
+  //     });
+  //   });
+  //   });
+
+    app.get("/content",isAuthorized, (req, res) => {
+      db.query(`select * from content`,
+        (err, result) => {
+          if (err) throw err;
+    
+          res.json({
+            message: "berhasil menampilkan data content",
+            data: result
+          });
+        }
+      );
+    });
+  
+    
 
   app.listen(port, () => console.log(`PORT 3000 Sam!!!`))
